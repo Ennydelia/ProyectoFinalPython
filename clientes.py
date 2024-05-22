@@ -1,23 +1,19 @@
 # Avance 2 - Modulos y Clases / Avance 3 - Creacion de funciones
 import sqlite3
+from BaseDatos import BaseDatos
 
 # Creacion de la clase cliente
 class Cliente:
-    # Conexion de SQL
-    def abrirConexion(self):
-        conexion = None
-        try:
-            conexion = sqlite3.connect('HappyBurguerBD.db') 
-            return conexion
-        except Exception as e:
-            print('Error al conectar a la Base de datos: {}'.format(e))
-    
+
+    # Inicializar la BaseDatos
+    def __init__(self):
+        self.BaseDatos = BaseDatos()
 
     # Realizamos un listado de clientes (Para comprobar conexion SQL)
     def mostrarClientes(self):
         try:
             # Conexion a la Base de datos
-            conexion = sqlite3.connect('HappyBurguerBD.db') 
+            conexion = self.BaseDatos.abrirConexion() 
             cursor = conexion.cursor()
             # Se verifica que la tabla clientes cuente con informacion
             cursor.execute("SELECT * FROM clientes")     
@@ -44,7 +40,7 @@ class Cliente:
     def agregarcliente(self):
         try:
             # Conexion a la Base de datos
-            conexion = sqlite3.connect('HappyBurguerBD.db') 
+            conexion = self.BaseDatos.abrirConexion() 
             cursor = conexion.cursor()
             datos_incorrectos = True
             while datos_incorrectos:
@@ -80,7 +76,7 @@ class Cliente:
     def modificarCliente(self):
         try:
             # Conexion a la Base de datos
-            conexion = sqlite3.connect('HappyBurguerBD.db') 
+            conexion = self.BaseDatos.abrirConexion() 
             cursor = conexion.cursor()
             # Realiza una consulta de clientes para ver que existan
             cursor.execute("SELECT * FROM clientes")     
@@ -139,7 +135,7 @@ class Cliente:
     def eliminarCliente(self):
         try:
             # Conexion a la Base de datos
-            conexion = sqlite3.connect('HappyBurguerBD.db') 
+            conexion = self.BaseDatos.abrirConexion() 
             cursor = conexion.cursor()
             cursor.execute("SELECT * FROM clientes")     
             clientes = cursor.fetchall()

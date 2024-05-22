@@ -2,24 +2,19 @@
 import sqlite3
 from clientes import Cliente
 from menu import Producto
+from BaseDatos import BaseDatos
 
 # Creacion de la clase Pedido
 class Pedido:
-    # Conexion de SQL
-    def abrirConexion(self):
-        conexion = None
-        try:
-            conexion = sqlite3.connect('HappyBurguerBD.db') 
-            return conexion
-        except Exception as e:
-            print('Error al conectar a la Base de datos: {}'.format(e))
-    
+        # Inicializar la BaseDatoe
+    def __init__(self):
+        self.BaseDatos = BaseDatos()
 
     # Realizamos un listado de pedidos (Para comprobar conexion SQL)
     def mostrarPedidos(self):
         try:
             # Conexion a la Base de datos
-            conexion = sqlite3.connect('HappyBurguerBD.db') 
+            conexion = self.BaseDatos.abrirConexion() 
             cursor = conexion.cursor()
             # Obtiene el listado de pedidos si es que existen pedidos
             cursor.execute("SELECT * FROM pedido")     
@@ -47,7 +42,7 @@ class Pedido:
         cliente = Cliente()
         try:
             # Conexion a la base de datos
-            conexion = sqlite3.connect('HappyBurguerBD.db') 
+            conexion = self.BaseDatos.abrirConexion() 
             cursor = conexion.cursor()
             # Realiza la muestra de los Clientes
             cliente.mostrarClientes()                 
@@ -103,7 +98,7 @@ class Pedido:
                     # Se imprime en ticket
                     archivo = open('Ticket de Pedido.txt', 'w')
 
-                    archivo.write(cliente_nombre + "ha realizado el pedido de\n"+ 
+                    archivo.write(cliente_nombre + " ha realizado el pedido de\n"+ 
                                   producto_nombre + "\n" + 
                                   "dando un total de: $" + str(costo_total))
                     archivo.close()
@@ -122,7 +117,7 @@ class Pedido:
     def cancelarPedido(self):
         try:
             # Conexion a la Base de datos
-            conexion = sqlite3.connect('HappyBurguerBD.db') 
+            conexion = self.BaseDatos.abrirConexion() 
             cursor = conexion.cursor()
             cursor.execute("SELECT * FROM pedido")     
             pedidos = cursor.fetchall()
@@ -135,10 +130,10 @@ class Pedido:
                 datos_incorrectos = True
                 while datos_incorrectos:
                     try:
-                        idPedido = input("Cual es la clave del cliente a eliminar?")
+                        idPedido = input("Cual es el pedido a eliminar?")
                         datos_incorrectos = False
                     except Exception as e:
-                        print('Error al capturar el id del cliente: {}'.format(e))
+                        print('Error al capturar el id del pedido: {}'.format(e))
                         print('Intente de nuevo ingresar el id \n')
                         datos_incorrectos = True
                 

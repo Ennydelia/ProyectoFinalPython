@@ -1,4 +1,5 @@
 # Avance 4 - Consulta de Ticktes a traves de Flask
+# Se realizara dos templates, uno donde muestre el listado de pedidos y el segundo se mostrara el pedido seleccionado
 
 from flask import Flask, render_template
 import sqlite3 

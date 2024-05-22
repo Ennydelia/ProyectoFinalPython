@@ -1,23 +1,19 @@
 # Avance 2 - Modulos y Clases / Avance 3 Creacion de funciones
 import sqlite3
+from BaseDatos import BaseDatos
 
 # Creacion de la clase Producto
 class Producto:
     # Conexion de SQL
-    def abrirConexion(self):
-        conexion = None
-        try:
-            conexion = sqlite3.connect('HappyBurguerBD.db') 
-            return conexion
-        except Exception as e:
-            print('Error al conectar a la Base de datos: {}'.format(e))
-    
+        # Inicializar la BaseDatoe
+    def __init__(self):
+        self.BaseDatos = BaseDatos()
 
     # Realizamos un listado de Productos (Para comprobar conexion SQL)
     def mostrarProductos(self):
         try:
             # Conexion con la base de datos
-            conexion = sqlite3.connect('HappyBurguerBD.db') 
+            conexion = self.BaseDatos.abrirConexion() 
             cursor = conexion.cursor()
             cursor.execute("SELECT * FROM menu")     
             productos = cursor.fetchall()
@@ -42,7 +38,7 @@ class Producto:
     def agregarProducto(self):
         try:
             # Conexion a la Base de datos
-            conexion = sqlite3.connect('HappyBurguerBD.db') 
+            conexion = self.BaseDatos.abrirConexion() 
             cursor = conexion.cursor()
             datos_incorrectos = True
             while datos_incorrectos:
@@ -77,7 +73,7 @@ class Producto:
     def modificarProducto(self):
         try:
             # Conexion a la base de datos
-            conexion = sqlite3.connect('HappyBurguerBD.db') 
+            conexion = self.BaseDatos.abrirConexion() 
             cursor = conexion.cursor()
             # Realiza una consulta de productos para ver que existan
             cursor.execute("SELECT * FROM menu")     
@@ -135,7 +131,7 @@ class Producto:
     def eliminarProducto(self):
         try:
             # Conexion con la base de datos
-            conexion = sqlite3.connect('HappyBurguerBD.db') 
+            conexion = self.BaseDatos.abrirConexion() 
             cursor = conexion.cursor()
             # Verifica que existan productos a Eliminar
             cursor.execute("SELECT * FROM menu")     
