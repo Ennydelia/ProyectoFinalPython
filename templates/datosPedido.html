@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{{ encabezado_pagina }}</title>
+</head>
+<body>
+    
+{% if pedido %}
+    <h1>{{ titulo_pagina }}</h1>
+
+    <ul>
+        <li>Descripcion de pedido: {{ producto }}</li>
+        <li>Total: <strong>${{ precio }}</strong></li>
+    </ul>
+{% else %}
+    
+    No existe coincidencias
+{% endif %}
+
+<a href="/" style="margin-left: 30px;">Regresar a la lista de pedidos</a>
+
+</body>
+</html>

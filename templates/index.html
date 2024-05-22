@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{{ encabezado_pagina }}</title>
+</head>
+<body>
+
+<h1>{{ titulo_pagina }}</h1>
+
+<ul>
+    {% for pedido in pedidos %}
+        <li> Pedido No. <strong>{{ pedido[0] }}</strong> de {{pedido[1]}}<a href="pedidos/pedido/{{ pedido[0] }}" style="margin-left: 30px;">Ver detalles del ticket</a></li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>
