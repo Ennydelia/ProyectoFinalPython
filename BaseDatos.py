@@ -1,9 +1,13 @@
-# Avance 3 - Creacion de la base de datos /Llamado de conexion de la base de datos 
+""" Avance 3 - Creacion de la base de datos /Llamado de conexion de la base de datos """
 
 import sqlite3
 import os
 
 
+"""
+    Aqui se realizara la creacion y conexion de la base de datos, 
+    creando las tablas de clientes, menu y pedidos
+"""
 
 class BaseDatos:
     def crearBaseDatos(self):
@@ -12,13 +16,13 @@ class BaseDatos:
         except Exception as e:
             print('Error al crear la Base de datos: {}'.format(e))
 
-    # Verificar que existe la BD
+    """ Verificar que existe la BD """
     def verificarBaseDatosExiste(self):
         if os.path.isfile('HappyBurguerBD.db'):
             return True
         else:
             return False
-    # Creacion de las tablas de la base de datos 
+    """ Creacion de las tablas de la base de datos  """
     def crearTablaProductos(self):
         conexion = self.abrirConexion()
 
@@ -43,7 +47,8 @@ class BaseDatos:
 
         conexion.close()
     
-    # Abrir la conexion de la BD
+    """ Abrir la conexion de la BD 
+    Esta conexion se estara llamando en cada modulo del sistema """
     def abrirConexion(self):
         try:
             conexion = sqlite3.connect('HappyBurguerBD.db') 

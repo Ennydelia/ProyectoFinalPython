@@ -1,25 +1,38 @@
-# Avance 2 - Modulos y Clases / Avance 3 - Creacion de funciones
+"""Avance 2 - Modulos y Clases / Avance 3 - Creacion de funciones"""
 import sqlite3
 from BaseDatos import BaseDatos
 
-# Creacion de la clase cliente
+""" Creacion de la clase cliente """
 class Cliente:
 
     # Inicializar la BaseDatos
     def __init__(self):
         self.BaseDatos = BaseDatos()
 
-    # Realizamos un listado de clientes (Para comprobar conexion SQL)
+    """ Para este modulo sera necesario crear una tabla en SQL con los siguientes campos:
+            clave (string)
+            nombre (string)
+            Dirección (string)
+            correo_electrónico (string)
+            teléfono (string)
+        Adicional se declararan las siguientes funciones:
+        Agregar cliente.
+        Eliminar cliente.
+        Actualizar cliente.
+        Mostrar cliente.
+    """
+
+    """ Creamos la muestra del listado de clientes """
     def mostrarClientes(self):
         try:
             # Conexion a la Base de datos
             conexion = self.BaseDatos.abrirConexion() 
             cursor = conexion.cursor()
-            # Se verifica que la tabla clientes cuente con informacion
+            """ Se verifica que la tabla clientes cuente con informacion """
             cursor.execute("SELECT * FROM clientes")     
             clientes = cursor.fetchall()
             if len(clientes) > 0:
-                # Imprime el listado de clientes
+                """ Imprime el listado de clientes """
                 print("Listado de Clientes Actuales: ")
                 for clave,nombre,direccion,correo_electronico,telefono in clientes:
                     print("""
@@ -36,7 +49,7 @@ class Cliente:
                 cursor.close()
                 conexion.close()
         
-    # Agregar un nuevo cliente
+    """ Agregar un nuevo cliente """
     def agregarcliente(self):
         try:
             # Conexion a la Base de datos
@@ -45,7 +58,7 @@ class Cliente:
             datos_incorrectos = True
             while datos_incorrectos:
                 try:
-                    # Solicita los datos a ingresar
+                    """ Solicita los datos a ingresar """
                     clave = input("Ingresa la clave del cliente: \n")
                     nombre = input("Ingresa el nombre: \n")
                     direccion = input("Direccion de cliente: \n")
@@ -56,7 +69,7 @@ class Cliente:
                     print('Error al capturar un dato: {}'.format(e))
                     print('Intente de nuevo ingresar los datos \n')
                     datos_incorrectos = True
-            # Se realiza el insert de la informacion
+            """ Se realiza el insert de la informacion """
             valores = (clave, nombre, direccion, correo_electronico, telefono)
             sql = ''' INSERT INTO clientes(clave,nombre,direccion,correo_electronico,telefono)
                     VALUES(?,?,?,?,?) '''                    
@@ -72,20 +85,21 @@ class Cliente:
                 print("------------------------------------")
                 self.mostrarClientes()
 
-    # Actualizar un cliente
+    """ Actualizar un cliente """
     def modificarCliente(self):
         try:
             # Conexion a la Base de datos
             conexion = self.BaseDatos.abrirConexion() 
             cursor = conexion.cursor()
-            # Realiza una consulta de clientes para ver que existan
+            """ Realiza una consulta de clientes para ver que existan,
+            en caso de que la tabla cuente con clientes, realiza la muestra del listado de ellos, 
+            llamando a la funcion mostrarClientes"""
             cursor.execute("SELECT * FROM clientes")     
             clientes = cursor.fetchall()
             if len(clientes) > 0:
-                # Muestra el listado de clientes
                 self.mostrarClientes()
                 print("----------------------------------")
-                # Busca el cliente por clave
+                """ Busca el cliente por clave """
                 claveCliente = ''
                 datos_incorrectos = True
                 while datos_incorrectos:
@@ -99,7 +113,7 @@ class Cliente:
                 eCliente = cursor.execute("SELECT * FROM clientes WHERE clave = ?", (claveCliente,))    
                 cliente = eCliente.fetchone()
                 if cliente :
-                    # Se solicita los datos del cliente a modificar
+                    """ Se solicita los datos del cliente a modificar """
                     datos_incorrectos = True
                     while datos_incorrectos:
                         try:
@@ -112,7 +126,7 @@ class Cliente:
                             print('Error al capturar un dato: {}'.format(e))
                             print('Intente de nuevo ingresar los datos \n')
                             datos_incorrectos = True
-                    # Se realiza el update del cliente a modificar
+                    """ Se realiza el update del cliente a modificar """
                     sql = ''' UPDATE clientes SET nombre = ?, direccion = ?, correo_electronico = ?, telefono = ? WHERE clave = ? '''
                     datosCliente = (nombre,direccion,correo_electronico,telefono,claveCliente)
                     cursor.execute(sql,datosCliente)
@@ -131,19 +145,21 @@ class Cliente:
                 cursor.close()
                 conexion.close()
 
-    # Eliminar un cliente
+    """ Eliminar un cliente """
     def eliminarCliente(self):
         try:
             # Conexion a la Base de datos
             conexion = self.BaseDatos.abrirConexion() 
             cursor = conexion.cursor()
+            """ Realiza una consulta de clientes para ver que existan,
+            en caso de que la tabla cuente con clientes, realiza la muestra del listado de ellos, 
+            llamando a la funcion mostrarClientes"""
             cursor.execute("SELECT * FROM clientes")     
             clientes = cursor.fetchall()
             if len(clientes) > 0:
-                # Muestra el listado de clientes                
                 self.mostrarClientes()
                 print("------------------------------------")
-                # Busca un cliente por clave
+                """ Busca un cliente por clave """
                 claveCliente = ''
                 datos_incorrectos = True
                 while datos_incorrectos:
@@ -157,7 +173,7 @@ class Cliente:
                 eCliente = cursor.execute("SELECT * FROM clientes WHERE clave = ?", (claveCliente,))    
                 cliente = eCliente.fetchone()
                 if cliente :
-                    # Realiza el Delete del cliente
+                    """Realiza el Delete del cliente """
                     sql = ''' DELETE FROM clientes WHERE clave = ? '''
                     cursor.execute(sql,(claveCliente,))
                     conexion.commit()

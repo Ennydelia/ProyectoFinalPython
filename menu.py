@@ -1,15 +1,26 @@
-# Avance 2 - Modulos y Clases / Avance 3 Creacion de funciones
+""" Avance 2 - Modulos y Clases / Avance 3 Creacion de funciones """
 import sqlite3
 from BaseDatos import BaseDatos
 
-# Creacion de la clase Producto
+""" Creacion de la clase Producto 
+    Para este modulo sera necesario crear una base de datos el cual contenga los siguientes campos:
+    clave (string)
+    nombre (string) 
+    precio (float)
+
+    Adicional, se crearan las siguientes funciones:
+    Agregar producto.
+    Eliminar producto.
+    Actualizar producto.
+    Mostrar producto
+"""
 class Producto:
     # Conexion de SQL
         # Inicializar la BaseDatoe
     def __init__(self):
         self.BaseDatos = BaseDatos()
 
-    # Realizamos un listado de Productos (Para comprobar conexion SQL)
+    """ Realizamos un listado de Productos (Para comprobar conexion SQL) """
     def mostrarProductos(self):
         try:
             # Conexion con la base de datos
@@ -34,7 +45,7 @@ class Producto:
                 cursor.close()
                 conexion.close()
         
-    # Agregar un nuevo producto
+    """ Agregar un nuevo producto """
     def agregarProducto(self):
         try:
             # Conexion a la Base de datos
@@ -43,7 +54,7 @@ class Producto:
             datos_incorrectos = True
             while datos_incorrectos:
                 try:
-                    # Solicita los datos a ingresar
+                    """ Solicita los datos a ingresar """
                     clave = input("Ingresa la clave para el producto: \n")
                     nombre = input("Nombre del producto: \n")
                     precio = float(input("Precio: \n"))
@@ -52,7 +63,7 @@ class Producto:
                     print('Error al capturar un dato: {}'.format(e))
                     print('Intente de nuevo ingresar los datos \n')
                     datos_incorrectos = True
-            # Realiza el insert de los datos solicitados
+            """ Realiza el insert de los datos solicitados """
             valores = (clave, nombre, precio)
             sql = ''' INSERT INTO menu(clave,nombre,precio)
                     VALUES(?,?,?) '''                    
@@ -66,23 +77,24 @@ class Producto:
                 cursor.close()
                 conexion.close()
                 print("------------------------------------")
-                # Muestra un listado actualizado de productos
+                """ Muestra un listado actualizado de productos """
                 self.mostrarProductos()
 
-    # Actualizar informacion de un producto
+    """ Actualizar informacion de un producto """
     def modificarProducto(self):
         try:
             # Conexion a la base de datos
             conexion = self.BaseDatos.abrirConexion() 
             cursor = conexion.cursor()
-            # Realiza una consulta de productos para ver que existan
+            """ Realiza una consulta de productos para ver que existan,
+            en caso de que la tabla cuente con productos, realiza la muestra del listado de ellos, 
+            llamando a la funcion mostrarProductos"""
             cursor.execute("SELECT * FROM menu")     
             productos = cursor.fetchall()
             if len(productos) > 0:
-                # Muestra el listado de productos
                 self.mostrarProductos()
                 print("----------------------------------")
-                # Busca el producto por clave
+                """ Busca el producto por clave """
                 claveProducto = ''
                 datos_incorrectos = True
                 while datos_incorrectos:
@@ -96,7 +108,7 @@ class Producto:
                 eProducto = cursor.execute("SELECT * FROM menu WHERE clave = ?", (claveProducto,))    
                 producto = eProducto.fetchone()
                 if producto :
-                    # Se solicita los datos del cliente a modificar
+                    """ Se solicita los datos del cliente a modificar """
                     datos_incorrectos = True
                     while datos_incorrectos:
                         try:
@@ -107,7 +119,7 @@ class Producto:
                             print('Error al capturar un dato: {}'.format(e))
                             print('Intente de nuevo ingresar los datos \n')
                             datos_incorrectos = True
-                    # Se realiza el update del cliente a modificar
+                    """ Se realiza el update del cliente a modificar """
                     sql = ''' UPDATE menu SET nombre = ?, precio = ? WHERE clave = ? '''
                     datosProducto = (nombre,precio,claveProducto)
                     cursor.execute(sql,datosProducto)
@@ -127,20 +139,21 @@ class Producto:
                 conexion.close()
 
 
-    # Eliminar un producto
+    """ Eliminar un producto """
     def eliminarProducto(self):
         try:
             # Conexion con la base de datos
             conexion = self.BaseDatos.abrirConexion() 
             cursor = conexion.cursor()
-            # Verifica que existan productos a Eliminar
+            """ Realiza una consulta de productos para ver que existan,
+            en caso de que la tabla cuente con productos, realiza la muestra del listado de ellos, 
+            llamando a la funcion mostrarProductos"""
             cursor.execute("SELECT * FROM menu")     
             productos = cursor.fetchall()
             if len(productos) > 0:
-                # Muestra el listado de clientes                
                 self.mostrarProductos()
                 print("------------------------------------")
-                # Busca un cliente por clave
+                """ Busca un cliente por clave """
                 claveProducto = ''
                 datos_incorrectos = True
                 while datos_incorrectos:
@@ -154,7 +167,7 @@ class Producto:
                 eProducto = cursor.execute("SELECT * FROM menu WHERE clave = ?", (claveProducto,))    
                 producto = eProducto.fetchone()
                 if producto :
-                    # Realiza el Delete del cliente
+                    """ Realiza el Delete del cliente """
                     sql = ''' DELETE FROM menu WHERE clave = ? '''
                     cursor.execute(sql,(claveProducto,))
                     conexion.commit()

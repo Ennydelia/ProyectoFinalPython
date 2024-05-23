@@ -1,22 +1,32 @@
-# Avance 2 - Modulos y Clases / Avance 3 - Creacion de funciones
+""" Avance 2 - Modulos y Clases / Avance 3 - Creacion de funciones """
 import sqlite3
 from clientes import Cliente
 from menu import Producto
 from BaseDatos import BaseDatos
 
-# Creacion de la clase Pedido
+""" Creacion de la clase Pedido
+    Para este modulo sera necesario crear una base de datos el cual contenga los siguientes campos:
+    pedido (integer)
+    cliente (string)
+    producto (string)
+    precio (float)
+
+    Adicional, se crearan las siguientes funciones:
+    Crear pedido.
+    Cancelar pedido.
+"""
 class Pedido:
         # Inicializar la BaseDatoe
     def __init__(self):
         self.BaseDatos = BaseDatos()
 
-    # Realizamos un listado de pedidos (Para comprobar conexion SQL)
+    """ Realizamos un listado de pedidos (Para comprobar conexion SQL) """
     def mostrarPedidos(self):
         try:
             # Conexion a la Base de datos
             conexion = self.BaseDatos.abrirConexion() 
             cursor = conexion.cursor()
-            # Obtiene el listado de pedidos si es que existen pedidos
+            """ Obtiene el listado de pedidos si es que existen pedidos """
             cursor.execute("SELECT * FROM pedido")     
             pedidos = cursor.fetchall()
             if len(pedidos) > 0:
@@ -36,7 +46,7 @@ class Pedido:
                 cursor.close()
                 conexion.close()
 
-    # Realizamos la creacion de un nuevo pedido
+    """ Realizamos la creacion de un nuevo pedido """
     def agregarPedido(self):
         menu = Producto()
         cliente = Cliente()
@@ -44,9 +54,9 @@ class Pedido:
             # Conexion a la base de datos
             conexion = self.BaseDatos.abrirConexion() 
             cursor = conexion.cursor()
-            # Realiza la muestra de los Clientes
+            """ Realiza la muestra de los Clientes buscando el cliente desde clientes.py"""
             cliente.mostrarClientes()                 
-            # Se realiza la busqueda del cliente en base a la clave ingresada
+            """ Se realiza la busqueda del cliente en base a la clave ingresada """
             claveCliente = ''
             datos_incorrectos = True
             while datos_incorrectos:
@@ -57,11 +67,11 @@ class Pedido:
                     print('Error al capturar el id del cliente: {}'.format(e))
                     print('Intente de nuevo ingresar el id \n')
                     datos_incorrectos = True
-            # Guarda el nombre del cliente
+            """ Guarda el nombre del cliente """
             eCliente = cursor.execute("SELECT nombre FROM clientes WHERE clave = ?", (claveCliente,))    
             cliente_nombre = eCliente.fetchone()[0]
             if cliente_nombre :
-                # Se realiza la busqueda de los productos hasta el momento
+                """ Se realiza la busqueda de los productos hasta el momento buscando desde menu.py"""
                 menu.mostrarProductos()
                 claveProducto = ''
                 datos_incorrectos = True
@@ -74,16 +84,16 @@ class Pedido:
                         print('Intente de nuevo ingresar el id \n')
                         datos_incorrectos = True
                 
-                # Guarda el nombre y precio del producto
+                """ Guarda el nombre y precio del producto """
                 cursor.execute("SELECT nombre, precio FROM menu WHERE clave = ?", (claveProducto,))
                 producto_nombre, precio_unitario = cursor.fetchone()
                 if producto_nombre :
-                    # Se realiza la solicitud de la cantidad ha pedir para hacer el calculo
+                    """ Se realiza la solicitud de la cantidad ha pedir para hacer el calculo """
                     unidades = int(input("Ingrese la cantidad de unidades a solicitar: "))
                     costo_total = precio_unitario * unidades
 
                     producto_nombre = str(unidades) + ' ' + producto_nombre
-                    # Se realiza el guardado y se imprime la informacion
+                    """ Se realiza el guardado y se imprime la informacion """
                     valores = (cliente_nombre, producto_nombre, costo_total)
                     sql = ''' INSERT INTO pedido(cliente,producto,precio)
                             VALUES(?,?,?) '''
@@ -113,24 +123,27 @@ class Pedido:
                 cursor.close()
                 conexion.close()
 
-    # Se realiza la cancelacion de un pedido (Se elimina)
+    """ Se realiza la cancelacion de un pedido (Se elimina) """
     def cancelarPedido(self):
         try:
             # Conexion a la Base de datos
             conexion = self.BaseDatos.abrirConexion() 
             cursor = conexion.cursor()
+            """ Realiza una consulta de pedidos para ver que existan,
+            en caso de que la tabla cuente con pedidos, realiza la muestra del listado de ellos, 
+            llamando a la funcion mostrarPedidos"""
             cursor.execute("SELECT * FROM pedido")     
             pedidos = cursor.fetchall()
             if len(pedidos) > 0:
-                # Muestra el listado de Pedidos                
+                """ Muestra el listado de Pedidos """
                 self.mostrarPedidos()
                 print("------------------------------------")
-                # Busca un pedido por clave
+                """ Busca un pedido por clave """
                 idPedido = ''
                 datos_incorrectos = True
                 while datos_incorrectos:
                     try:
-                        idPedido = input("Cual es el pedido a eliminar?")
+                        idPedido = input("Cual es el pedido a cancelar?")
                         datos_incorrectos = False
                     except Exception as e:
                         print('Error al capturar el id del pedido: {}'.format(e))
@@ -140,7 +153,7 @@ class Pedido:
                 ePedido = cursor.execute("SELECT * FROM pedido WHERE pedido = ?", (idPedido,))    
                 pedido = ePedido.fetchone()
                 if pedido :
-                    # Realiza el Delete del pedido
+                    """ Realiza el Delete del pedido """
                     sql = ''' DELETE FROM pedido WHERE pedido = ? '''
                     cursor.execute(sql,(idPedido,))
                     conexion.commit()
